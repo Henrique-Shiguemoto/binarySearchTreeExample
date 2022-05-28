@@ -30,6 +30,8 @@ void test_maximum_node();
 void test_minimum_node();
 struct node* delete_from_tree(struct node*, int);
 void test_delete_from_tree();
+struct node* free_tree(struct node*);
+void test_free_tree();
 
 struct node* initialize_node(int key){
     //malloc returns a void pointer, typecasting to (struct node*) is unnecessary, but it could be if we're compiling for C++ instead of C
@@ -417,7 +419,7 @@ void test_node_search(){
 
 void print_tree_preorder(struct node* root){
     if(root != NULL){
-		printf("Node Value: %i\n", root->key);
+        printf("Node Value: %i\n", root->key);
         print_tree_preorder(root->left);
         print_tree_preorder(root->right);
     }
@@ -702,6 +704,54 @@ void test_delete_from_tree(){
     printf("\nAll deletion tests are done!\n");    
 }
 
+struct node* free_tree(struct node* root){
+    if(root == NULL){
+        return root;
+    }
+    root->right = free_tree(root->right);
+    root->left = free_tree(root->left);
+    root = NULL;
+    return root;
+}
+
+void test_free_tree(){
+    /*
+        ---------------TEST STRUCTURE---------------
+            1 - Create a tree;
+            2 - Insert as many nodes as you want (method of insertion is up to the tester);
+            3 - Use free_tree() on the root of the tree.
+        --------------------------------------------
+    */
+
+    // 1
+    struct node* root = create_tree(50);
+
+    // 2
+    // insert_into_tree(root, 80);
+    // insert_into_tree(root, 90);
+    // insert_into_tree(root, 40);
+    // insert_into_tree(root, 55);
+    // insert_into_tree(root, 33);
+    // insert_into_tree(root, 88);
+    // insert_into_tree(root, 64);
+    // insert_into_tree(root, 21);
+    // insert_into_tree(root, 10);
+    // insert_into_tree(root, 19);
+    // insert_into_tree(root, 39);
+    // insert_into_tree(root, 78);
+    // insert_into_tree(root, 95);
+    // insert_into_tree(root, 52);
+    // insert_into_tree(root, 67);
+    // insert_into_tree(root, 49);
+    // insert_into_tree(root, 37);
+
+    // 3
+    root = free_tree(root);
+    assert(root == NULL);
+
+    printf("\nAll tree freeing tests are done!\n");
+}
+
 int main(void){
     test_insert_into_tree();
     test_node_search();
@@ -709,4 +759,5 @@ int main(void){
     test_maximum_node();
     test_minimum_node();
     test_delete_from_tree();
+    test_free_tree();
 }
